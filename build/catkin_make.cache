@@ -1,0 +1,2 @@
+turtle_follow
+-DPYTHON_EXECUTABLE=/usr/bin/python -DCATKIN_DEVEL_PREFIX=/home/syd/turtle_tf_ws/devel -DCMAKE_INSTALL_PREFIX=/home/syd/turtle_tf_ws/install -G Unix Makefiles

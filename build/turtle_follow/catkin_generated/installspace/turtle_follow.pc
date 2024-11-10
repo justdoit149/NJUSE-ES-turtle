@@ -1,0 +1,8 @@
+prefix=/home/syd/turtle_tf_ws/install
+
+Name: turtle_follow
+Description: Description of turtle_follow
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 
