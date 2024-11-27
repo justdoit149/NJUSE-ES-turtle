@@ -22,6 +22,9 @@ int main(int argc, char *argv[])
     // 需要创建发布 /turtle2/cmd_vel 的 publisher 对象
     ros::Publisher pub = nh.advertise<geometry_msgs::Twist>("/turtle2/cmd_vel", 1000);
     ros::Rate rate(10);
+    // 定义两个距离阈值
+    const double k1 = 3.0; // 全速跟随阈值
+    const double k2 = 1.0; // 等待阈值
     while (ros::ok())
     {
         try
@@ -30,7 +33,21 @@ int main(int argc, char *argv[])
             geometry_msgs::TransformStamped tfs = buffer.lookupTransform("turtle2", "turtle1", ros::Time(0));
             // 5-2.根据坐标信息生成速度信息 -- geometry_msgs/Twist.h
             geometry_msgs::Twist twist;
-            twist.linear.x = 0.5 * sqrt(pow(tfs.transform.translation.x, 2) + pow(tfs.transform.translation.y, 2));
+            // 计算两者之间的距离
+            double distance = sqrt(pow(tfs.transform.translation.x, 2) + pow(tfs.transform.translation.y, 2));
+            if (distance > k1)
+            {
+                twist.linear.x = 2.0; // 全速
+            }
+            else if (distance > k2)
+            {
+                twist.linear.x = 1.0; // 降速
+            }
+            else
+            {
+                twist.linear.x = 0.0; // 停止
+            }
+            // twist.linear.x = 0.5 * sqrt(pow(tfs.transform.translation.x, 2) + pow(tfs.transform.translation.y, 2));
             twist.angular.z = 4 * atan2(tfs.transform.translation.y, tfs.transform.translation.x);
             // 5-3.发布速度信息 -- 需要提前创建 publish 对象
             pub.publish(twist);
